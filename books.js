@@ -32,7 +32,25 @@ export async function getBookById(id) {
 
 export async function createBook(book) {
   // Query the database to create a book and return the newly created book
+  const { id, title, published_date, author_id } = book;
+  // populating the coloumns
+  const queryText = `
+  INSERT INTO books (id, title, published_date, author_id)
+  VALUES ($1, $2, $3, $4)
+  RETURNING *`;
+
+  try {
+    // Execute the query
+    const res = await client.query(queryText, [id, title, published_date, author_id]);
+    console.log(res)
+    // Return the newly created book
+    return res.rows[0];
+  } catch (err) {
+    console.error('Error creating book:', err);
+  }
 }
+
+
 
 export async function updateBookById(id, updates) {
   // Query the database to update a book and return the newly updated book or null
