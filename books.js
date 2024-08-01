@@ -31,9 +31,7 @@ export async function getBookById(id) {
 }
 
 export async function createBook(book) {
-  // Query the database to create a book and return the newly created book
   const { title, published_date, author_id } = book;
-  // populating the coloumns
   const queryText = `
   INSERT INTO books (title, published_date, author_id)
   VALUES ($1, $2, $3)
@@ -48,9 +46,20 @@ export async function createBook(book) {
 }
 
 
-
+// Query the database to update a book and return the newly updated book or null
 export async function updateBookById(id, updates) {
-  // Query the database to update a book and return the newly updated book or null
+  const queryText = "UPDATE books SET title = $2, published_date = $3, author_id = $4 WHERE id = $1"
+  try {
+    const res = await pool.query(queryText, [id, updates.title, updates.published_date, updates.author_id])
+    if (res.rowCount > 0) {
+      return `Row with id ${id} has been updated successfully`;
+    } else {
+      return false;
+    }
+
+  } catch (error) {
+
+  }
 }
 
 export async function deleteBookById(id) {
